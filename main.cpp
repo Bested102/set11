@@ -2,6 +2,7 @@
 #include <map>
 #include <string>
 #include "utils.hpp"
+#include <bcrypt/BCrypt.hpp>
 
 using namespace std;
 
@@ -30,7 +31,7 @@ int main() {
                     cout << "Enter password: ";
                     cin >> password;
 
-                    users[email] = password;
+                    users[email] = BCrypt::generateHash(password);;
                     cout << "Sign up successful.\n";
                 } catch (runtime_error& e) {
                     cout << e.what() << endl;
@@ -44,7 +45,7 @@ int main() {
                 cout << "Enter password: ";
                 cin >> password;
 
-                if (users[email] == password) {
+                if (users.count(email) && BCrypt::validatePassword(password, users[email])) {
                     logged_in = true;
                     cout << "Login successful.\n";
                 } else {
